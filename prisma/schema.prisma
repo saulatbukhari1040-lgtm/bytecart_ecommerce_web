@@ -1,0 +1,45 @@
+// This is your Prisma schema file for ByteCart
+// It defines the database models for PostgreSQL (AWS RDS)
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Product {
+  id          Int        @id @default(autoincrement())
+  name        String
+  description String
+  price       Float
+  stock       Int
+  image       String
+  category    String
+  slug        String     @unique
+  details     String     @default("")
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  cartItems   CartItem[]
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  userId    String     @unique
+  items     CartItem[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        Int     @id @default(autoincrement())
+  cart      Cart    @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    Int
+  product   Product @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+  quantity  Int
+
+  @@unique([cartId, productId])
+}
