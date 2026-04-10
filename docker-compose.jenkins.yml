@@ -1,0 +1,44 @@
+version: "3.8"
+
+services:
+  db:
+    image: postgres:15-alpine
+    container_name: bytecart-db-jenkins
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: bytecartdb123
+      POSTGRES_DB: bytecart
+    ports:
+      - "5433:5432"
+    volumes:
+      - pgdata-jenkins:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  app:
+    image: node:20-alpine
+    container_name: bytecart-app-jenkins
+    working_dir: /app
+    command: sh -c "npm install && npx prisma generate && npx prisma db push && npm run build && npm start"
+    ports:
+      - "3001:3000"
+    volumes:
+      - .:/app
+      - app_node_modules:/app/node_modules
+      - app_next:/app/.next
+    environment:
+      DATABASE_URL: postgresql://postgres:bytecartdb123@db:5432/bytecart?schema=public
+      NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY: pk_test_cHJvdmVuLW11bGxldC03OS5jbGVyay5hY2NvdW50cy5kZXYk
+      CLERK_SECRET_KEY: sk_test_8YPuvR9oHAY5og2S3k55kjq2vve0iZ1Gy1w204DTO3
+      NODE_ENV: production
+    depends_on:
+      db:
+        condition: service_healthy
+
+volumes:
+  pgdata-jenkins:
+  app_node_modules:
+  app_next:

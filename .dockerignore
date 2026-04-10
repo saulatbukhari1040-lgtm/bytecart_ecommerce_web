@@ -1,0 +1,14 @@
+node_modules
+.next
+.git
+.env
+.env.local
+.env.*
+*.pem
+npm-debug.log*
+.DS_Store
+.ebextensions
+Procfile
+project-structure.txt
+bytecart-eb.zip
+README.md
