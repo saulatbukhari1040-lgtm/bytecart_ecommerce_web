@@ -1,4 +1,4 @@
-version: "3.8"
+
 
 services:
   db:
@@ -19,7 +19,7 @@ services:
       retries: 5
 
   app:
-    build: .
+    image: saulatbukhari/bytecart:latest
     container_name: bytecart-app
     ports:
       - "80:3000"
