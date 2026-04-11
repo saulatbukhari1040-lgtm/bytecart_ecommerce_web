@@ -22,7 +22,7 @@ services:
     image: node:20-alpine
     container_name: bytecart-app-jenkins
     working_dir: /app
-    command: sh -c "npm install && npx prisma generate && npx prisma db push && npm run build && npm start"
+    command: sh -c "npm install && npx prisma generate && npx prisma db push && node scripts/seed.js && npm run build && npm start"
     ports:
       - "3001:3000"
     volumes:
