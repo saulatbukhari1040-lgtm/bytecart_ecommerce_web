@@ -38,6 +38,16 @@ services:
       db:
         condition: service_healthy
 
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    container_name: bytecart-test-jenkins
+    environment:
+      TEST_URL: http://bytecart-app-jenkins:3000
+    depends_on:
+      - app
+
 volumes:
   pgdata-jenkins:
   app_node_modules:

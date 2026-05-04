@@ -1,0 +1,23 @@
+FROM node:20-alpine
+
+# Install Chromium and Chromium-chromedriver for Selenium Headless testing
+RUN apk update && apk add --no-cache \
+    chromium \
+    chromium-chromedriver
+
+# Tell Puppeteer/Selenium to skip downloading Chrome and use the installed one
+ENV CHROME_BIN=/usr/bin/chromium-browser
+ENV CHROMEDRIVER_BIN=/usr/bin/chromedriver
+
+WORKDIR /app
+
+# Copy package and prisma schema before install to prevent postinstall crash
+COPY package.json package-lock.json ./
+COPY prisma ./prisma/
+RUN npm install
+
+# Copy test files
+COPY tests ./tests
+
+# Run mocha tests
+CMD ["npx", "mocha", "tests/ui.test.cjs"]
