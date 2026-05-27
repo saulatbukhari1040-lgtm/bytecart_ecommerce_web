@@ -24,11 +24,8 @@ COPY --from=builder /app/public ./public
 COPY --from=builder /app/prisma ./prisma
 COPY --from=builder /app/scripts ./scripts
 
-# prisma cli + dotenv (needed for db push and seeding)
-COPY --from=builder /app/node_modules/prisma ./node_modules/prisma
-COPY --from=builder /app/node_modules/@prisma/engines ./node_modules/@prisma/engines
-COPY --from=builder /app/node_modules/@prisma/engines-version ./node_modules/@prisma/engines-version
-COPY --from=builder /app/node_modules/dotenv ./node_modules/dotenv
+# Copy all node_modules to guarantee Prisma CLI and all its sub-dependencies (like @prisma/debug, chalk, etc.) are available for the entrypoint script
+COPY --from=builder /app/node_modules ./node_modules
 
 COPY docker-entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh
