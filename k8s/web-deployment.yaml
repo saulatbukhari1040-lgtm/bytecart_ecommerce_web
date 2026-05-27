@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web-deployment
+  labels:
+    app: bytecart-web
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: bytecart-web
+  template:
+    metadata:
+      labels:
+        app: bytecart-web
+    spec:
+      containers:
+        - name: web
+          image: saulatbukhari/bytecart:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - containerPort: 3000
+          env:
+            - name: NODE_ENV
+              value: "production"
+            - name: DATABASE_URL
+              value: "postgresql://postgres:bytecartdb123@db:5432/bytecart?schema=public"
+            - name: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+              value: "pk_test_cHJvdmVuLW11bGxldC03OS5jbGVyay5hY2NvdW50cy5kZXYk"
+            - name: CLERK_SECRET_KEY
+              value: "sk_test_8YPuvR9oHAY5og2S3k55kjq2vve0iZ1Gy1w204DTO3"
+          resources:
+            requests:
+              cpu: "100m"
+              memory: "256Mi"
+            limits:
+              cpu: "500m"
+              memory: "512Mi"
