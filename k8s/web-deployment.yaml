@@ -23,6 +23,8 @@ spec:
           env:
             - name: NODE_ENV
               value: "production"
+            - name: HOSTNAME
+              value: "0.0.0.0"
             - name: DATABASE_URL
               value: "postgresql://postgres:bytecartdb123@db:5432/bytecart?schema=public"
             - name: NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
